@@ -95,31 +95,36 @@ export default {
           this.currentIndex = this.slides.length - 1;
       }
     },
-    classifyImage(hotdog = false) {
-      // deep copy to prevent 
-      const currentSlideSelected = JSON.parse(JSON.stringify(this.slides[this.currentIndex]));
-
+    _checkForUserErrors(hotdog = false, currentSlideSelected) {
       if(hotdog && !currentSlideSelected.hotdog
         || !hotdog && currentSlideSelected.hotdog) {
         this.userErrorScore++;
       }
-
-      // check if hotdog already inside 
+    },
+    _existingClassification(currentSlideSelected) {
       let existingClassification = null;
-      this.classifications.forEach(classification => {
+        this.classifications.forEach(classification => {
           if(classification.src == currentSlideSelected.src) {
-              existingClassification = classification
-          }
-      });
+            existingClassification = classification
+          }          
+      }); 
+      return existingClassification;       
+    },
+    classifyImage(hotdog = false) {
+      // deep copy to prevent changes in the original object
+      const currentSlideSelected = JSON.parse(JSON.stringify(this.slides[this.currentIndex]));
 
+      this._checkForUserErrors(hotdog, currentSlideSelected);
+
+      let existingClassification = this._existingClassification(currentSlideSelected);
       if(!existingClassification) {
         currentSlideSelected.hotdog = hotdog;
         this.classifications.push(currentSlideSelected);
-
       } else {
         existingClassification.hotdog = hotdog;
       }
 
+      this.goToNext();
     }
   }
 }
@@ -158,5 +163,10 @@ export default {
   .classificationResultImage {
     width: 5em;
     padding: 1em;
+  }
+
+  #errorScore {
+    margin-top: 1em;
+    margin-bottom: 1em;
   }
 </style>
