@@ -37,7 +37,7 @@
           Wake up BANANA!
       </div>
       <div slot="body">
-        Oh my god. You are terrible. <strong>{{userErrorScore}}</strong> errors!
+        Oh my god. You are terrible.
       </div>
     </modal>
   </div>
