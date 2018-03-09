@@ -32,10 +32,20 @@
                       :slide="slide" />
       </transition-group>
     </div>
+    <modal v-show="isModalVisible" @close="closeModal"> 
+      <div slot="header">
+          Wake up BANANA!
+      </div>
+      <div slot="body">
+        Oh my god. You are terrible. <strong>{{userErrorScore}}</strong> errors!
+      </div>
+    </modal>
   </div>
 </template>
 <script>
 import ImageView from '../components/image-view'
+import Modal from '../components/modal.vue';
+
 export default {
   name: 'ImageViewer',
   data () {
@@ -71,11 +81,13 @@ export default {
       ],
       classifications: [],
       currentIndex: 0,
-      userErrorScore: 0
+      userErrorScore: 0,
+      isModalVisible: false
     }
   },
   components: {
-    ImageView
+    ImageView,
+    Modal
   },
   methods: {
     isImageViewVisible: function (index) {
@@ -99,6 +111,11 @@ export default {
       if(hotdog && !currentSlideSelected.hotdog
         || !hotdog && currentSlideSelected.hotdog) {
         this.userErrorScore++;
+      }
+
+      if(this.userErrorScore >= 3) {
+        this.showModal();
+        this.userErrorScore = 0;
       }
     },
     _existingClassification(currentSlideSelected) {
@@ -125,7 +142,13 @@ export default {
       }
 
       this.goToNext();
-    }
+    },
+    showModal() {
+      this.isModalVisible = true;
+    },
+    closeModal() {
+      this.isModalVisible = false;
+    }  
   }
 }
 </script>
